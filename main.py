@@ -1,42 +1,32 @@
-import requests
-import json
-from constants import API_KEY
+from api_functions import *
 
-search_url = "https://api.golfcourseapi.com/v1/search"
-get_course_url = "https://api.golfcourseapi.com/v1/courses/{id}"
-api_healthcheck_url = "https://api.golfcourseapi.com/v1/healthcheck"
+def display_course_choices():
+    search_query = input("What is the name of the course?: ")
+    search_results = search_for_course(search_query)
 
-
-
-def check_api_health():
-    response = requests.get(api_healthcheck_url)
-    print(response.status_code)
-    if response.status_code == 200:
-        return "good response from api"
+    list_len = 0
+    if len(search_results['courses']) <= 5:
+        list_len = len(search_results['courses'])
     else:
-        return "bad response from api"
-    
-def search_for_course(search_query):
-    header = {
-        "Authorization": API_KEY
-    }
+        list_len = 5
 
-    params = {
-        "search_query": search_query
-    }
-
-    response = requests.get(search_url, headers=header, params=params)
-
-    data = response.json()
-    return data
-
-
-
+    for i in range(len(search_results['courses'])):
+        try:
+            print(f'{i+1}. {search_results['courses'][i]['course_name']}, {search_results['courses'][i]['location']['address']}')
+        except KeyError:
+            pass
 def main():
     # print("Hello World")
     # print(check_api_health())
-    data = search_for_course("rancho park")
-    print(json.dumps(data, indent=4))
+    # data = search_for_course("rancho park")
+    # filename = "data.json"
+    # with open(filename, 'w') as file:
+    #     json.dump(data, file, indent=4)
+
+    # print(f"JSON data saved to {filename}.")
+
+    display_course_choices()
+
 
 if __name__ == "__main__":
     main()
