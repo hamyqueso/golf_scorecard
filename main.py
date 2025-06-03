@@ -1,8 +1,6 @@
 from api_functions import *
 
 def display_course_choices():
-    search_query = input("What is the name of the course?: ")
-    search_results = search_for_course(search_query)
 
     # code to limit number of results displayed
     # list_len = 0
@@ -11,13 +9,20 @@ def display_course_choices():
     # else:
     #     list_len = 5
 
-    for i in range(len(search_results['courses'])):
-        try:
-            print(f'{i+1}. {search_results['courses'][i]['course_name']}, {search_results['courses'][i]['location']['address']}')
-        except KeyError:
-            pass
+    while True:
+        search_query = input("What is the name of the course?: ")
+        search_results = search_for_course(search_query)
 
-    return search_results
+        if len(search_results) > 0:
+            for i in range(len(search_results['courses'])):
+                try:
+                    print(f'{i+1}. {search_results['courses'][i]['course_name']}, {search_results['courses'][i]['location']['address']}')
+                except KeyError:
+                    pass
+            
+            return search_results
+        else:
+            continue
 
 def choose_course(search_results):
     
