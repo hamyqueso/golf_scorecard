@@ -1,4 +1,5 @@
 from api_functions import *
+from os_functions import *
 
 def display_course_choices():
 
@@ -13,7 +14,7 @@ def display_course_choices():
         search_query = input("What is the name of the course?: ")
         search_results = search_for_course(search_query)
 
-        if len(search_results) > 0:
+        if search_results['courses']:
             for i in range(len(search_results['courses'])):
                 try:
                     print(f'{i+1}. {search_results['courses'][i]['course_name']}, {search_results['courses'][i]['location']['address']}')
@@ -22,7 +23,7 @@ def display_course_choices():
             
             return search_results
         else:
-            continue
+            print(f"No courses found with name '{search_query}'. Please enter course name again.")
 
 def choose_course(search_results):
     
@@ -80,7 +81,7 @@ def main():
     search_results = display_course_choices()
     course = choose_course(search_results)
     print(select_tees(course))
-   
+    clear_console()
 
 
 if __name__ == "__main__":
