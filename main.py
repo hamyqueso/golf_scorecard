@@ -3,7 +3,7 @@ from os_functions import *
 import math
 
 
-def print_scorecard(course_name, gender, tee):
+def get_scorecard_header(course_name, gender, tee):
     print(f"Course: {course_name}")
     print(f"Gender: {gender}, Tees: {tee['tee_name']}")
     holes = tee['holes']
@@ -43,8 +43,14 @@ def string_spacer(s):
     result = l_space + s + r_space
     return result
 
-def score_updater(holes, hole):
-    pass
+def score_updater(holes, current_hole):
+    
+    score = input(f"What did you score on hole {current_hole}?")
+    try:
+        holes[current_hole-1]["score"] = int(score)
+        return holes
+    except TypeError:
+        print("Please enter a number.")
 
 
 def main():
@@ -61,14 +67,19 @@ def main():
     course = choose_course(search_results)
     clear_console()
     course_name, gender, tees = select_tees(course)
-    scorecard_header = print_scorecard(course_name, gender, tees)
-    while True:
+    scorecard_header = get_scorecard_header(course_name, gender, tees)
+    holes = tees['holes'].copy()
+    score_string = "Score   "
+    
+    for i in range(1, len(holes)+ 1):
         clear_console()
         print(scorecard_header)
-        try:
-            score_update = int(input("What did you score on the hole?"))
-        except TypeError:
-            print()
+        print()
+        print(score_string)
+        holes = score_updater(holes, i)
+        score_string += string_spacer(holes[i-1]['score'])
+        
+        
 
 
 if __name__ == "__main__":
