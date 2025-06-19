@@ -1,6 +1,7 @@
 import requests
 import json
-from constants import API_KEY
+import os
+from dotenv import load_dotenv
 
 search_url = "https://api.golfcourseapi.com/v1/search"
 get_course_url = "https://api.golfcourseapi.com/v1/courses/{id}"
@@ -18,8 +19,9 @@ def check_api_health():
         return "bad response from api"
     
 def search_for_course(search_query):
+    load_dotenv()
     header = {
-        "Authorization": API_KEY
+        "Authorization": os.getenv("API_KEY")
     }
 
     params = {

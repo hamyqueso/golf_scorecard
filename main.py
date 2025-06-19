@@ -19,10 +19,22 @@ def get_scorecard_header(course_name, gender, tee):
         yardage_string += string_spacer(holes[i]["yardage"])
         handicap_string += string_spacer(holes[i]["handicap"])
 
-        # holes_string += f"   {i+1}   "
-        # par_string += f"   {holes[i]["par"]}   "
-        # yardage_string += f"  {holes[i]["yardage"]} "
-        # handicap_string += f"   {holes[i]["handicap"]}   "
+        if i == 8:
+            holes_string += string_spacer("IN")
+            par_string += string_spacer(sum([int(hole['par']) for hole in holes[0:9]]))
+            yardage_string += string_spacer(sum([int(hole['yardage']) for hole in holes[0:9]]))
+            handicap_string += string_spacer("")
+
+        elif i==(len(holes)-1):
+            holes_string += string_spacer("OUT")
+            par_string += string_spacer(sum([int(hole['par']) for hole in holes[9:]]))
+            yardage_string += string_spacer(sum([int(hole['yardage']) for hole in holes[9:]]))
+            handicap_string += string_spacer("")
+
+            holes_string += string_spacer("TOTAL")
+            par_string += string_spacer(sum([int(hole['par']) for hole in holes]))
+            yardage_string += string_spacer(sum([int(hole['yardage']) for hole in holes]))
+            handicap_string += string_spacer("")
         
     # Instead of printing these from the function I think it would 
     # be better to return the strings so we don't have to loop 
@@ -44,29 +56,27 @@ def string_spacer(s):
     return result
 
 def score_updater(holes, current_hole):
+    while True:
     
-    score = input(f"What did you score on hole {current_hole}?")
-    try:
-        holes[current_hole-1]["score"] = int(score)
-        return holes
-    except TypeError:
-        print("Please enter a number.")
+        score = input(f"What did you score on hole {current_hole}?")
+        try:
+            holes[current_hole-1]["score"] = int(score)
+            return holes
+        except TypeError:
+            print("Error: Please enter an integer")
+            print()
+        except Exception as e:
+            print(f"other error {e}")
+            print()
 
 
 def main():
-    # print("Hello World")
-    # print(check_api_health())
-    # data = search_for_course("rancho park")
-    # filename = "data.json"
-    # with open(filename, 'w') as file:
-    #     json.dump(data, file, indent=4)
-
-    # print(f"JSON data saved to {filename}.")
 
     search_results = display_course_choices()
     course = choose_course(search_results)
     clear_console()
     course_name, gender, tees = select_tees(course)
+    clear_console()
     scorecard_header = get_scorecard_header(course_name, gender, tees)
     holes = tees['holes'].copy()
     score_string = "Score   "
@@ -78,6 +88,9 @@ def main():
         print(score_string)
         holes = score_updater(holes, i)
         score_string += string_spacer(holes[i-1]['score'])
+
+    print(score_string)
+
         
         
 
