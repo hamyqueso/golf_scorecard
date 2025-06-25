@@ -88,7 +88,14 @@ def main():
         print(score_string)
         holes = score_updater(holes, i)
         score_string += string_spacer(holes[i-1]['score'])
+        if i == 9:
+            score_string += string_spacer(sum([hole['score'] for hole in holes[:9]]))
+        elif i == len(holes):
+            score_string += string_spacer(sum([hole['score'] for hole in holes[9:]]))
+            score_string += string_spacer(sum([hole['score'] for hole in holes]))
 
+    clear_console()
+    print(scorecard_header)
     print(score_string)
 
         
