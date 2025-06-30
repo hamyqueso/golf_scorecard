@@ -11,12 +11,7 @@ api_healthcheck_url = "https://api.golfcourseapi.com/v1/healthcheck"
 
 
 def check_api_health():
-    response = requests.get(api_healthcheck_url)
-    print(response.status_code)
-    if response.status_code == 200:
-        return "good response from api"
-    else:
-        return "bad response from api"
+    return requests.get(api_healthcheck_url).status_code
     
 def search_for_course(search_query):
     load_dotenv()
@@ -58,7 +53,6 @@ def display_course_choices():
             print(f"No courses found with name '{search_query}'. Please enter course name again.")
 
 def choose_course(search_results):
-    
 
     while True:
         choice = input("Please enter the number of the course you are playing: ")
