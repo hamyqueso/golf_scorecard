@@ -26,12 +26,12 @@ def get_scorecard_header(course_name, gender, tee):
             handicap_string += string_spacer("")
 
         elif i==(len(holes)-1):
-            holes_string += string_spacer("OUT")
+            holes_string += string_spacer(" OUT")
             par_string += string_spacer(sum([int(hole['par']) for hole in holes[9:]]))
             yardage_string += string_spacer(sum([int(hole['yardage']) for hole in holes[9:]]))
             handicap_string += string_spacer("")
 
-            holes_string += string_spacer("TOTAL")
+            holes_string += string_spacer(" TOTAL")
             par_string += string_spacer(sum([int(hole['par']) for hole in holes]))
             yardage_string += string_spacer(sum([int(hole['yardage']) for hole in holes]))
             handicap_string += string_spacer("")
@@ -58,7 +58,7 @@ def string_spacer(s):
 def score_updater(holes, current_hole):
     while True:
     
-        score = input(f"What did you score on hole {current_hole}?")
+        score = input(f"What did you score on hole {current_hole}? ")
         try:
             holes[current_hole-1]["score"] = int(score)
             return holes
@@ -71,6 +71,35 @@ def score_updater(holes, current_hole):
 
 
 def main():
+    response = check_api_health()
+    if response != 200:
+        print("bad response from api")
+    else:
+        print("good response from api")
+        search_results = display_course_choices()
+        course = choose_course(search_results)
+        if not course["tees"]:
+            print("selected course has no tees")
+            return
+        clear_console()
+        course_name, gender, tees = select_tees(course)
+        clear_console()
+        scorecard_header = get_scorecard_header(course_name, gender, tees)
+        holes = tees['holes'].copy()
+        score_string = "Score   "
+        
+        for i in range(1, len(holes)+ 1):
+            clear_console()
+            print(scorecard_header)
+            print()
+            print(score_string)
+            holes = score_updater(holes, i)
+            score_string += string_spacer(holes[i-1]['score'])
+            if i == 9:
+                score_string += string_spacer(sum([hole['score'] for hole in holes[:9]]))
+            elif i == len(holes):
+                score_string += " " + string_spacer(sum([hole['score'] for hole in holes[9:]]))
+                score_string += " " + string_spacer(sum([hole['score'] for hole in holes]))
 
     search_results = display_course_choices()
     course = choose_course(search_results)
@@ -94,7 +123,9 @@ def main():
             score_string += string_spacer(sum([hole['score'] for hole in holes[9:]]))
             score_string += string_spacer(sum([hole['score'] for hole in holes]))
 
-    clear_console()
+        clear_console()
+        print(scorecard_header)
+        clear_console()
     print(scorecard_header)
     print(score_string)
 
